@@ -23,7 +23,7 @@
 #define HANDLE_FROM_VP(p) ( BASE_HANDLE_OFFSET + ( (unsigned char *)(p) - (unsigned char *)NULL ) )
 #define HANDLE_TO_VP(h) (void *)( (unsigned char *)NULL + (ptrdiff_t)((h) - BASE_HANDLE_OFFSET) )
 
-sqlc_handle_t sqlc_evcore_db_open(int sqlc_evcore_api_version, const char * filename, int flags)
+sqlc_handle_t sqlc_evplus_db_open(int sqlc_evplus_api_version, const char * filename, int flags)
 {
   sqlite3 *d1;
   int r1;
@@ -31,7 +31,7 @@ sqlc_handle_t sqlc_evcore_db_open(int sqlc_evcore_api_version, const char * file
 
   MYLOG("db_open %s %d", filename, flags);
 
-  if (sqlc_evcore_api_version != SQLC_EVCORE_API_VERSION) {
+  if (sqlc_evplus_api_version != SQLC_EVPLUS_API_VERSION) {
     __android_log_print(ANDROID_LOG_ERROR, "sqlc", "API MISMATCH ERROR");
     return -SQLC_RESULT_ERROR;
   }
@@ -132,13 +132,24 @@ int sqlc_db_close(sqlc_handle_t db)
   return sqlite3_close(mydb);
 }
 
+// XXX TBD (...) ???:
+#define MAX_RR_CHUNKS 8000
+
+// TBD What if MAX_RR_CHUNKS limit is exceeded (??)
+
+// XXX TBD (...) ???:
+#define RR_CHUNK_CUTOFF 10000
+
 struct qc_s {
   sqlite3 * mydb;
   //void * cleanup1;
   void * cleanup2;
+  void * rrl[MAX_RR_CHUNKS];
+  int rli;
+  int rll;
 };
 
-sqlc_handle_t sqlc_evcore_db_new_qc(sqlc_handle_t db)
+sqlc_handle_t sqlc_evplus_db_new_qc(sqlc_handle_t db)
 {
   sqlite3 * mydb;
   struct qc_s * myqc;
@@ -155,11 +166,13 @@ sqlc_handle_t sqlc_evcore_db_new_qc(sqlc_handle_t db)
   myqc->mydb = mydb;
   //myqc->cleanup1 = NULL;
   myqc->cleanup2 = NULL;
+  myqc->rli = 0;
+  myqc->rll = 0;
 
   return HANDLE_FROM_VP(myqc);
 }
 
-void sqlc_evcore_qc_finalize(sqlc_handle_t qc)
+void sqlc_evplus_qc_finalize(sqlc_handle_t qc)
 {
   struct qc_s * myqc;
 
@@ -172,6 +185,10 @@ void sqlc_evcore_qc_finalize(sqlc_handle_t qc)
 
   //free(myqc->cleanup1);
   free(myqc->cleanup2);
+  {
+    int i;
+    for (i=0; i<myqc->rll; ++i) free(myqc->rrl[i]);
+  }
   free(myqc);
 }
 
@@ -238,7 +255,7 @@ int sj(const char * j, int tl, char * a)
   return ai;
 }
 
-const char *sqlc_evcore_qc_execute(sqlc_handle_t qc, const char * batch_json, int ll)
+const char * ee(sqlc_handle_t qc, const char * batch_json, int ignored)
 {
   struct qc_s * myqc;
   sqlite3 * mydb;
@@ -286,10 +303,14 @@ const char *sqlc_evcore_qc_execute(sqlc_handle_t qc, const char * batch_json, in
 // WORKAROUND is to do malloc/memcpy/free instead.
 // TBD VERY strange!
 
+  // (...)
   //free(myqc->cleanup1);
   //myqc->cleanup1 = NULL;
-  free(myqc->cleanup2);
-  myqc->cleanup2 = NULL;
+  //free(myqc->cleanup2);
+  //myqc->cleanup2 = NULL;
+  if (myqc->cleanup2 != NULL) return "[\"batcherror\", \"internal error: cleanup error 1\", \"extra\"]";
+  if (myqc->rli != 0) return "[\"batcherror\", \"internal error: cleanup error 2\", \"extra\"]";
+  if (myqc->rll != 0) return "[\"batcherror\", \"internal error: cleanup error 3\", \"extra\"]";
 
   if (*jp1 != '[') return "[\"batcherror\", \"internal error: json parse error 1\", \"extra\"]";
 
@@ -420,7 +441,22 @@ const char *sqlc_evcore_qc_execute(sqlc_handle_t qc, const char * batch_json, in
       if (rv == SQLITE_ROW) {
         strcpy(rr+rrlen, "\"okrows\",");
         rrlen += 9;
+
         do {
+          if (rrlen >= RR_CHUNK_CUTOFF) {
+            {
+              strcpy(rr+rrlen, "\"extra\"]");
+              myqc->cleanup2 = NULL;
+              myqc->rrl[myqc->rll] = rr;
+              ++myqc->rll;
+
+              myqc->cleanup2 = rr = malloc(arlen = FIRST_ALLOC);
+              if (rr == NULL) goto batchmemoryerror;
+              strcpy(rr, "[");
+              rrlen = 1;
+            }
+          }
+
           cc = sqlite3_column_count(s);
           sprintf(nf, "%d", cc);
           strcpy(rr+rrlen, nf);
@@ -659,17 +695,48 @@ const char *sqlc_evcore_qc_execute(sqlc_handle_t qc, const char * batch_json, in
 
   strcpy(rr+rrlen, "\"extra\"]");
 
-  return rr;
+  if (myqc->rll == 0) {
+    return rr;
+  }
+
+  // else ...
+
+  myqc->cleanup2 = NULL;
+  myqc->rrl[myqc->rll] = rr;
+  ++myqc->rll;
+
+  {
+    // shoud be enough to hold "[null]" (6 characters)
+    // plus terminating `\0` character
+    const char * last = malloc(8);
+    strcpy(last, "[null]");
+    myqc->rrl[myqc->rll] = last;
+    ++myqc->rll;
+  }
+
+  return "[\"multi\"]";
 
 batchmemoryerror1:
   // FUTURE TODO what to do in case this returns an error
   sqlite3_finalize(s);
 
 batchmemoryerror:
+  // (...)
   //free(myqc->cleanup1);
   //myqc->cleanup1 = NULL;
-  free(myqc->cleanup2);
-  myqc->cleanup2 = NULL;
+  //free(myqc->cleanup2);
+  //myqc->cleanup2 = NULL;
 
   return "[\"batcherror\", \"memory error\", \"extra\"]";
+}
+
+const char *sqlc_evplus_qc_execute(sqlc_handle_t qc, const char * maybe_batch_json)
+{
+  struct qc_s * myqc = HANDLE_TO_VP(qc);
+  if (maybe_batch_json[0] == '\0') {
+    const char * rr = myqc->rrl[myqc->rli];
+    ++myqc->rli;
+    return rr;
+  }
+  return ee(qc, maybe_batch_json, 0);
 }

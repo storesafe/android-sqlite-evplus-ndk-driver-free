@@ -1,5 +1,5 @@
 /* API version to check: */
-#define SQLC_EVCORE_API_VERSION 1
+#define SQLC_EVPLUS_API_VERSION 1
 
 /* Export some important sqlite open flags to the Java interface (VFS not supported): */
 #define SQLC_OPEN_READONLY      0x00001
@@ -40,13 +40,14 @@ typedef long long sqlc_long_t;
 typedef sqlc_long_t sqlc_handle_t;
 
 /* Check Java/native library match and open database handle */
-sqlc_handle_t sqlc_evcore_db_open(int sqlc_evcore_api_version, const char * filename, int flags);
+sqlc_handle_t sqlc_evplus_db_open(int sqlc_evplus_api_version, const char * filename, int flags);
 
 // FUTURE TBD (???) for sqlcipher:
 //  int sqlc_db_key_bytes(sqlc_handle_t db, unsigned char *key_bytes, int num_bytes);
 //  int sqlc_db_rekey_bytes(sqlc_handle_t db, unsigned char *key_bytes, int num_bytes);
 
-int sqlc_db_key_native_string(sqlc_handle_t db, char *key_string);
+// FUTURE TBD (???) for sqlcipher:
+//  int sqlc_db_key_native_string(sqlc_handle_t db, char *key_string);
 // FUTURE TBD (???) for sqlcipher:
 //  int sqlc_db_rekey_string_native(sqlc_handle_t db, char *key_string);
 
@@ -59,8 +60,8 @@ const char * sqlc_errstr_native(int errcode);
 
 int sqlc_db_close(sqlc_handle_t db);
 
-sqlc_handle_t sqlc_evcore_db_new_qc(sqlc_handle_t db);
+sqlc_handle_t sqlc_evplus_db_new_qc(sqlc_handle_t db);
 
-const char * sqlc_evcore_qc_execute(sqlc_handle_t qc, const char * batch_json, int ll);
+const char * sqlc_evplus_qc_execute(sqlc_handle_t qc, const char * batch_json);
 
-void sqlc_evcore_qc_finalize(sqlc_handle_t qc);
+void sqlc_evplus_qc_finalize(sqlc_handle_t qc);
