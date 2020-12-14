@@ -46,8 +46,9 @@ sqlc_handle_t sqlc_evplus_db_open(int sqlc_evplus_api_version, const char * file
 //  int sqlc_db_key_bytes(sqlc_handle_t db, unsigned char *key_bytes, int num_bytes);
 //  int sqlc_db_rekey_bytes(sqlc_handle_t db, unsigned char *key_bytes, int num_bytes);
 
-// FUTURE TBD (???) for sqlcipher:
-//  int sqlc_db_key_native_string(sqlc_handle_t db, char *key_string);
+// for SQLCipher version support:
+int sqlc_db_key_native_string(sqlc_handle_t db, char *key_string);
+
 // FUTURE TBD (???) for sqlcipher:
 //  int sqlc_db_rekey_string_native(sqlc_handle_t db, char *key_string);
 
