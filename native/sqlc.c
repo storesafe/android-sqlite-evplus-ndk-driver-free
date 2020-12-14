@@ -7,9 +7,13 @@
 
 #include "sqlite3.h"
 
+#ifndef OMIT_REGEXP
 #include "sqlite3_regexp.h"
+#endif
 
+#ifndef OMIT_BASE64
 #include "sqlite3_base64.h"
+#endif
 
 #define BASE_HANDLE_OFFSET 0x100000000LL
 
@@ -44,10 +48,14 @@ sqlc_handle_t sqlc_evplus_db_open(int sqlc_evplus_api_version, const char * file
 
   sqlite3_db_config(d1, SQLITE_DBCONFIG_DEFENSIVE, 1, NULL);
 
+#ifndef OMIT_REGEXP
   // TBD IGNORE result:
   sqlite3_regexp_init(d1, &err);
+#endif
 
+#ifndef OMIT_BASE64
   sqlite3_base64_init(d1);
+#endif
 
   return HANDLE_FROM_VP(d1);
 }
