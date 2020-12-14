@@ -52,6 +52,17 @@ sqlc_handle_t sqlc_evplus_db_open(int sqlc_evplus_api_version, const char * file
   return HANDLE_FROM_VP(d1);
 }
 
+int sqlc_db_key_native_string(sqlc_handle_t db, char *key_string)
+{
+  sqlite3 * mydb = HANDLE_TO_VP(db);
+
+#ifdef SQLITE_HAS_CODEC
+  return sqlite3_key(mydb, key_string, strlen(key_string));
+#else
+  return SQLITE_ERROR;
+#endif
+}
+
 /** FUTURE TBD (???) for sqlcipher:
 int sqlc_db_key_bytes(sqlc_handle_t db, unsigned char *key_bytes, int num_bytes)
 {
@@ -75,12 +86,6 @@ int sqlc_db_rekey_bytes(sqlc_handle_t db, unsigned char *key_bytes, int num_byte
 #endif
 }
 **/
-
-int sqlc_db_key_native_string(sqlc_handle_t db, char *key_string)
-{
-  // NOT IMPLEMENTED in this version branch:
-  return SQLITE_INTERNAL;
-}
 
 sqlc_long_t sqlc_db_last_insert_rowid(sqlc_handle_t db)
 {
