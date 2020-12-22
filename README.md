@@ -1,8 +1,11 @@
-# Android-sqlite-evplus-ext-native-driver-free build (with evplus-ext user defined functions)
+# android-sqlite-evplus-ext-native-driver-free build (with evplus-ext user defined functions)
 
 Provides a native build of SQLite with an optimized JSON-based data interface and a workaround for large SELECT results, with a low-level API for Cordova SQLite evplus plugin versions.
 
-Based on [liteglue / Android-sqlite-native-driver](https://github.com/liteglue/Android-sqlite-native-driver).
+Based on:
+
+- [`storesafe/android-sqlite-evcore-native-driver-free`](https://github.com/storesafe/android-sqlite-evcore-native-driver-free)
+- [`liteglue/Android-sqlite-native-driver`](https://github.com/liteglue/Android-sqlite-native-driver).
 
 by Christopher J. Brody aka Chris Brody mailto: <chris@brody.consulting>
 
