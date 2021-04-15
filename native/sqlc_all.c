@@ -5,6 +5,8 @@
 
 #include "sqlite3_base64.c"
 
+#include "sqlite3_eu.c"
+
 #include "sqlc.h" /* types needed for EVPlusNativeDriver_JNI.c */
 
 #include "EVPlusNativeDriver_JNI.c"

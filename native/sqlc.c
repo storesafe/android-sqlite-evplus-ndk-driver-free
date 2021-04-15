@@ -11,6 +11,8 @@
 
 #include "sqlite3_base64.h"
 
+#include "sqlite3_eu.h"
+
 #define BASE_HANDLE_OFFSET 0x100000000LL
 
 #ifdef SQLC_KEEP_ANDROID_LOG
@@ -48,6 +50,8 @@ sqlc_handle_t sqlc_evplus_db_open(int sqlc_evplus_api_version, const char * file
   sqlite3_regexp_init(d1, &err);
 
   sqlite3_base64_init(d1);
+
+  sqlite3_eu_init(d1, "UPPER", "LOWER");
 
   return HANDLE_FROM_VP(d1);
 }
@@ -237,10 +241,10 @@ int sj(const char * j, int tl, char * a)
         break;
       }
     } else if (c >= 0xf0) {
-      // [WORKAROUND] - NEEDED to avoid garbage character after "?" mark
-      // on Android 6.0 and greater
-      a[ai++] = '?';
-      ti += 4;
+      a[ai++]=j[ti++];
+      a[ai++]=j[ti++];
+      a[ai++]=j[ti++];
+      a[ai++]=j[ti++];
     } else if (c >= 0xe0) {
       a[ai++]=j[ti++];
       a[ai++]=j[ti++];
@@ -540,10 +544,10 @@ const char * ee(sqlc_handle_t qc, const char * batch_json, int ignored)
                   } else if (pc >= 32 && pc < 127) {
                     rr[rrlen++] = pptext[pi++];
                   } else if (pc >= 0xf0) {
-                    // TBD WORKAROUND SOLUTION to avoid crash
-                    // in case of 4-byte UTF-8 character issue:
-                    rr[rrlen++] = '?';
-                    pi += 4;
+                    rr[rrlen++] = pptext[pi++];
+                    rr[rrlen++] = pptext[pi++];
+                    rr[rrlen++] = pptext[pi++];
+                    rr[rrlen++] = pptext[pi++];
                   } else if (pc >= 0xe0) {
                     rr[rrlen++] = pptext[pi++];
                     rr[rrlen++] = pptext[pi++];

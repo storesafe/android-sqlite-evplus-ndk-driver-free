@@ -21,7 +21,7 @@ Android-sqlite-evplus-ext-native-driver-free provides:
 
 This is accomplished by using [GlueGen](http://jogamp.org/gluegen/www/) around the C module.
 
-Minimum API level: _android-21 (Android 5.0)_
+Minimum API level: android-22 (Android 5.1)
 
 **NOTE:** This project references multiple subprojects, which may be resolved by: $ `make init` (as described below).
 
@@ -49,7 +49,7 @@ See also for some historical `android-ndk` cask information:
 
 ### SQLite version
 
-    3.32.3
+    3.34.0
 
 ### SQLite build flags
 
@@ -80,6 +80,7 @@ New stable default page size and cache size (<https://sqlite.org/pgszchng2016.ht
 - [brodybits / sqlite3-regexp-cached](https://github.com/brodybits/sqlite3-regexp-cached) - based on <http://git.altlinux.org/people/at/packages/?p=sqlite3-pcre.git> by Alexey Tourbin, public domain
 - [brodybits / sqlite3-base64](https://github.com/brodybits/sqlite3-base64) - Unlicense (public domain) ref: <http://unlicense.org/>
 - [brodybits / libb64-encode](https://github.com/brodybits/libb64-encode) - based on <http://libb64.sourceforge.net/> by Chris Venter, public domain
+- [brodybits / sqlite3-eu](https://github.com/brodybits/sqlite3-eu) - UPPER & LOWER string functions with support for EU characters by Chris Brody, MIT license
 
 ## For future consideration
 
