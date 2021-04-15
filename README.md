@@ -27,7 +27,13 @@ Minimum API level: android-22 (Android 5.1)
 
 **WARNING:** The reference handles that are returned by the `EVPlusNativeDriver` library functions are raw C pointer values (with `0x100000000` added). If someone uses a reference handle that is not valid, or no longer valid with the `EVPlusNativeDriver` library the behavior is undefined (may crash, for example). It is NOT recommended to use this API directly unless you really understand how this library works internally.
 
-~~**BUILD NOTICE:** `android-ndk` pre-17 is needed since this project still supports the deprecated `armeabi` target CPU.~~
+## SQLite build information
+
+### SQLite version
+
+    3.35.4
+
+### android-ndk version notes
 
 See the following reference for installing older `android-ndk` cask using Homebrew: <https://www.jverdeyen.be/mac/downgrade-brew-cask-application/>
 
@@ -45,11 +51,7 @@ See also for some historical `android-ndk` cask information:
 - https://github.com/Homebrew/homebrew-cask/commits/5e9f77552aef2ffa29efe8a9b916d89686b96c7f/Casks/android-ndk.rb
 - https://github.com/Homebrew/homebrew-cask/blob/5e9f77552aef2ffa29efe8a9b916d89686b96c7f/Casks/android-ndk.rb
 
-## SQLite build information
-
-### SQLite version
-
-    3.34.0
+FUTURE TODO: better documentation of API and some internal details
 
 ### SQLite build flags
 
