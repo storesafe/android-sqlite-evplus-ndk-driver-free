@@ -1,3 +1,4 @@
+OUTPUT_JAR := evplus-native-driver.jar
 
 all: ndkbuild
 
@@ -12,7 +13,7 @@ ndkbuild:
 	rm -rf lib libs *.jar
 	ndk-build
 	cp -r libs lib
-	jar cf evplus-native-driver.jar lib
+	jar cf $(OUTPUT_JAR) lib
 
 clean:
 	rm -rf obj lib libs *.jar *.zip *.jar
