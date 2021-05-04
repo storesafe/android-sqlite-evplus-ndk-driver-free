@@ -1,4 +1,4 @@
-OUTPUT_JAR := evplus-native-driver.jar
+OUTPUT_JAR := sqlc-evplus-ndk-driver.jar
 
 all: ndkbuild
 
