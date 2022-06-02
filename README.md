@@ -15,7 +15,7 @@ License: GPL v3 (<https://www.gnu.org/licenses/gpl-3.0.txt>) or commercial licen
 
 android-sqlite-evplus-ndk-driver-free provides build of a JAR with the following:
 - single `EVNDKDriver` class with native Java interface to the needed C functions
-- automatic build for _major Android targets (`armeabi-v7a`, `x86`, `x86_64`, `arm64-v8a`)_ that is accessible from the native Java interface, with the following user defined functions:
+- automatic build for _current_ _Android NDK targets (`armeabi-v7a`, `x86`, `x86_64`, `arm64-v8a`)_ that is accessible from the native Java interface, with the following user defined functions:
   - `REGEXP` integrated from [brodybits / sqlite3-regexp-cached](https://github.com/brodybits/sqlite3-regexp-cached) (based on <http://git.altlinux.org/people/at/packages/?p=sqlite3-pcre.git> by Alexey Tourbin, public domain)
   - `BASE64` and `BLOBFROMBASE64` integrated from [brodybits / sqlite3-base64](https://github.com/brodybits/sqlite3-base64), using [brodybits / libb64-core](https://github.com/brodybits/libb64-core) (based on <http://libb64.sourceforge.net/> by Chris Venter, public domain)
 
@@ -31,7 +31,7 @@ Minimum API level: __android-22 (Android 5.1)__
 
 ### SQLite version
 
-    3.37.2
+    __3.38.5__
 
 ### android-ndk version notes
 
