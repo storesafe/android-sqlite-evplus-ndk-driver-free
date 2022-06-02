@@ -1,4 +1,4 @@
-# android-sqlite-evplus-ndk-driver-free build (with evplus-ext user defined functions)
+# android-sqlite-evplus-ndk-driver-free build (with evplus-ext user defined functions) - evplus-eu-support-2022 version branch
 
 Provides Android NDK build of SQLite with an optimized JSON-based data interface and a workaround for large SELECT results, with a low-level API for Cordova SQLite evplus plugin versions.
 
@@ -18,10 +18,11 @@ android-sqlite-evplus-ndk-driver-free provides build of a JAR with the following
 - automatic build for _current_ _Android NDK targets (`armeabi-v7a`, `x86`, `x86_64`, `arm64-v8a`)_ that is accessible from the native Java interface, with the following user defined functions:
   - `REGEXP` integrated from [brodybits / sqlite3-regexp-cached](https://github.com/brodybits/sqlite3-regexp-cached) (based on <http://git.altlinux.org/people/at/packages/?p=sqlite3-pcre.git> by Alexey Tourbin, public domain)
   - `BASE64` and `BLOBFROMBASE64` integrated from [brodybits / sqlite3-base64](https://github.com/brodybits/sqlite3-base64), using [brodybits / libb64-core](https://github.com/brodybits/libb64-core) (based on <http://libb64.sourceforge.net/> by Chris Venter, public domain)
+  - replacement `UPPER` & `LOWER` string functions from [brodybits / sqlite3-eu](https://github.com/brodybits/sqlite3-eu) with support for some EU characters
 
 This is accomplished by using [GlueGen](http://jogamp.org/gluegen/www/) around the C module.
 
-Minimum API level: __android-22 (Android 5.1)__
+Minimum API level: __android-23 (Android 6.0)__
 
 **NOTE:** This project references multiple subprojects, which may be resolved by: $ `make init` (as described below).
 
